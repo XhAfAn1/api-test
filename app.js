@@ -11,6 +11,8 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
+
+
 // Connect to MongoDB
 mongoose.connect(process.env.mongo_url, {
   useNewUrlParser: true,
@@ -23,6 +25,10 @@ mongoose.connect(process.env.mongo_url, {
 app.get('/', (req, res) => {
   res.send('API is working!');
 });
+
+
+
+
 
 // Register
 app.post('/register', async (req, res) => {
@@ -43,6 +49,10 @@ app.post('/register', async (req, res) => {
   }
 });
 
+
+
+
+
 // Login
 app.post('/login', async (req, res) => {
   const { name, email, password } = req.body;
@@ -56,6 +66,29 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
     res.status(200).json({ message: 'Login successful', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+
+//usercount
+
+app.get('/usercount', async (req, res) => {
+  try {
+    const userCount = await User.countDocuments();
+    res.status(200).json({ count: userCount });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+
+app.get('/findname', async (req, res) => {
+  try {
+    const usera = await User.findOne({ name: 'a'});
+   // res.status(200).json({ usera });
+   res.send(usera);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
